@@ -1,0 +1,9 @@
+- [x] Update src/app/page.tsx to add Framer Motion scroll animations for smooth component appearance
+- [x] Import motion from framer-motion
+- [x] Define animation variants for container and items
+- [x] Wrap main in motion.div with stagger
+- [x] Wrap each component/section in motion.div with item variants
+- [ ] Test the animations by running dev server and scrolling
+- [ ] Verify smooth appearance on different screen sizes
+- [ ] Check for performance issues or conflicts with existing animations
+- [ ] Ensure animations trigger only once per scroll
