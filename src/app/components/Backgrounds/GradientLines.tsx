@@ -41,7 +41,7 @@ export const GradientLines = ({
 
   return (
     <div
-      ref={parentRef}
+      
       className={cn(
         " relative flex items-center w-full justify-center overflow-hidden",
         className
