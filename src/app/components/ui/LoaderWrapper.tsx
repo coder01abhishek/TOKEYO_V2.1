@@ -19,12 +19,6 @@ const LoaderWrapper = () => {
     // Critical images only
     '/assets/images/iPhone14Pro.svg',
     '/assets/images/cursor.png',
-
-    // Essential GIFs for modules
-    '/assets/gifs/consciousness.gif',
-    '/assets/gifs/memory.gif',
-    '/assets/gifs/modules.gif',
-    '/assets/gifs/speech.gif',
   ];
 
   const totalAssets = criticalAssets.length + 1; // +1 for fonts
