@@ -16,14 +16,12 @@ const ChangingWordHero = () => {
     "Girlfriend"
   ];
   const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFade(false); // fade out
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % words.length);
-        setFade(true); // fade in
+       
       }, 300); // match fade duration
     }, 2000);
     return () => clearInterval(interval);

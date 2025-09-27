@@ -35,7 +35,6 @@ const NewAiAnimate = () => {
     const sectionRef = useRef<HTMLElement>(null);
     const leftPillsRef = useRef<HTMLDivElement>(null);
     const rightPillsRef = useRef<HTMLDivElement>(null);
-    const gradientOverlayRef = useRef<HTMLDivElement>(null);
     const bottomTabsRef = useRef<HTMLDivElement>(null);
 
     const leftPills: PillData[] = [

@@ -7,7 +7,7 @@ interface LoaderProps {
   progress?: number;
 }
 
-const Loader: React.FC<LoaderProps> = ({ size = 80, progress = 0 }) => {
+const Loader: React.FC<LoaderProps> = ({ progress = 0 }) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 

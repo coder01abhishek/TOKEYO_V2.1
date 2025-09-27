@@ -7,7 +7,6 @@ import ModulesSection from "./components/ModulesSection";
 import UnderDevelopmentSlider from "./components/UnderDevelopmentSection";
 import AICharacterSection from "./components/AICharacterSection";
 import FaqSection from "./components/FaqSection";
-// import TokyoIntelligenceSection from "./components/TokyoIntelligenceSection";
 import NewAiAnimate from "./components/NewAiAnimate";
 import MobilePillTabs from "./components/MobilePillTabs";
 import Section from "./components/ui/Section";

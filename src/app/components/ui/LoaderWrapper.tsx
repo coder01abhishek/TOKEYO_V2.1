@@ -8,7 +8,6 @@ const LoaderWrapper = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
-  // Define critical assets that MUST load before showing content
   const criticalAssets = [
     '/videos/doll.mp4',
     '/videos/doll2.mp4', 
@@ -21,7 +20,7 @@ const LoaderWrapper = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const loadAssets = async () => {
       let loadedCount = 0;
-      const totalAssets = criticalAssets.length + 1; // +1 for fonts
+      const totalAssets = criticalAssets.length + 1; 
 
       const updateProgress = () => {
         const newProgress = Math.round((loadedCount / totalAssets) * 100);
@@ -29,12 +28,10 @@ const LoaderWrapper = ({ children }: { children: React.ReactNode }) => {
       };
 
       try {
-        // 1. Load fonts (most important)
         await document.fonts.ready;
         loadedCount++;
         updateProgress();
 
-        // 2. Preload critical images
         const imagePromises = criticalAssets
           .filter(asset => !asset.includes('.mp4'))
           .map(src => {
@@ -54,7 +51,6 @@ const LoaderWrapper = ({ children }: { children: React.ReactNode }) => {
             });
           });
 
-        // 3. Preload critical videos (metadata only for speed)
         const videoPromises = criticalAssets
           .filter(asset => asset.includes('.mp4'))
           .map(src => {
@@ -77,22 +73,16 @@ const LoaderWrapper = ({ children }: { children: React.ReactNode }) => {
             });
           });
 
-        // Wait for all assets with timeout
         await Promise.race([
           Promise.allSettled([...imagePromises, ...videoPromises]),
-          new Promise(resolve => setTimeout(resolve, 3000)) // Max 3 seconds wait
+          new Promise(resolve => setTimeout(resolve, 3000)) 
         ]);
-
-        // Ensure minimum loading time for better UX (1.5 seconds min)
-        const minLoadTime = 1500;
-        const elapsedTime = 0; // You'd need to track actual time
         
         setTimeout(() => {
           setLoading(false);
-        }, 300); // Short exit animation
+        }, 300); 
 
       } catch (error) {
-        // Fallback: hide after 2.5 seconds max
         setTimeout(() => {
           setLoading(false);
         }, 2500);

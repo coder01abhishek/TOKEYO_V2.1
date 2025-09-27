@@ -1,6 +1,5 @@
-
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import 'swiper/css/autoplay';
@@ -10,8 +9,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function SwiperGallery() {
+  const swiperRef = useRef<Swiper | null>(null);
+
   useEffect(() => {
-    const swiper = new Swiper('.swiper-container', {
+    swiperRef.current = new Swiper('.swiper-container', {
       modules: [Autoplay, EffectCoverflow],
       simulateTouch: true,
       watchSlidesProgress: true,
@@ -45,6 +46,14 @@ export default function SwiperGallery() {
         },
       },
     });
+
+    // Cleanup function to destroy swiper instance
+    return () => {
+      if (swiperRef.current) {
+        swiperRef.current.destroy();
+        swiperRef.current = null;
+      }
+    };
   }, []);
 
   const slidesData = [
@@ -93,7 +102,6 @@ export default function SwiperGallery() {
           <div className="swiper-wrapper h-full flex items-center">
             {slides}
           </div>
-
         </div>
         <span className="slider-frame absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 2xl:w-[320px] xl:w-[320px] lg:w-[320px] sm:w-[320px] w-[280px]">
           <Image

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import Image from 'next/image';
 
 const Step3 = () => {
     return (

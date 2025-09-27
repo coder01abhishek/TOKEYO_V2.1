@@ -93,10 +93,12 @@ export default function MobilePillTabs({ pills, bottomTabs }: MobilePillTabsProp
           >
             <div className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center gap-2 shadow-lg">
               <span className="w-[42px] h-[42px] flex items-center justify-center bg-[#2388FF] rounded-full flex-shrink-0">
-                <img
+                <Image
                   src={pills[activePillIndex].gif}
                   alt={pills[activePillIndex].label}
-                  className="w-6 h-6 float-bounce"
+                  width={24}
+                  height={24}
+                  className="float-bounce"
                 />
               </span>
               <span className="font-medium">{pills[activePillIndex].label}</span>
