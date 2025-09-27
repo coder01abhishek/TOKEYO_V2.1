@@ -38,14 +38,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <LoaderWrapper/>
-        <Header />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
-        <Analytics />
-        <SpeedInsights />
+        <LoaderWrapper>
+          <>
+            <Header />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <Footer />
+            <Analytics />
+            <SpeedInsights />
+          </>
+        </LoaderWrapper>
       </body>
     </html>
   );

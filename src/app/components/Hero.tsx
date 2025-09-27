@@ -28,6 +28,7 @@ const Hero: React.FC = () => {
                     loop
                     muted
                     playsInline
+                    controls={false}
                     className="z-10 w-full sm:h-full h-90 object-contain"
                 />
 
