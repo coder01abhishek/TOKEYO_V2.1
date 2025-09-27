@@ -37,15 +37,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" as="video" href="/videos/doll.mp4" />
+        <link rel="preload" as="video" href="/videos/doll2.mp4" />
+        <link rel="preload" as="video" href="/videos/doll3.mp4" />
+        <link rel="preload" as="image" href="/assets/images/iPhone14Pro.svg" />
+      </head>
       <body className={`${inter.className} antialiased`}>
-        <LoaderWrapper/>
-        <Header />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
-        <Analytics />
-        <SpeedInsights />
+        <LoaderWrapper>
+          <Header />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+          <Analytics />
+          <SpeedInsights />
+        </LoaderWrapper>
       </body>
     </html>
   );

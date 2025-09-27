@@ -4,132 +4,159 @@ import { useState, useEffect, useCallback } from 'react';
 import Loader from './Loader';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const LoaderWrapper = () => {
+interface LoaderWrapperProps {
+  children: React.ReactNode;
+}
+
+const LoaderWrapper = ({ children }: LoaderWrapperProps) => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [loadedCount, setLoadedCount] = useState(0);
 
-  // Only preload critical assets for faster initial load
+  // Minimal critical assets - only what's visible immediately
   const criticalAssets = [
-    // Only critical videos for hero section
-    '/videos/doll.mp4',
-
-    // Critical images only
-    '/assets/images/iPhone14Pro.svg',
+    '/videos/doll.mp4', // Only the first video
   ];
 
-  const totalAssets = criticalAssets.length + 1; // +1 for fonts
-
-  const updateProgress = useCallback(() => {
-    const newProgress = Math.round((loadedCount / totalAssets) * 100);
+  const updateProgress = useCallback((loaded: number, total: number) => {
+    const newProgress = Math.round((loaded / total) * 100);
     setProgress(newProgress);
-  }, [loadedCount, totalAssets]);
+  }, []);
 
-  const preloadImage = (src: string): Promise<void> => {
+  // Ultra-fast image preload with timeout
+  const preloadImage = (src: string): Promise<boolean> => {
     return new Promise((resolve) => {
       const img = new Image();
-      img.src = (src);
+      const timeout = setTimeout(() => {
+        resolve(false); // Timeout after 1.5 seconds
+      }, 1500);
+
+      img.src = src;
       img.loading = 'eager';
       img.onload = () => {
-        setLoadedCount(prev => prev + 1);
-        resolve();
+        clearTimeout(timeout);
+        resolve(true);
       };
       img.onerror = () => {
-        setLoadedCount(prev => prev + 1);
-        resolve();
+        clearTimeout(timeout);
+        resolve(false);
       };
     });
   };
 
-  const preloadVideo = (src: string): Promise<void> => {
+  // Much faster video preload - only metadata
+  const preloadVideo = (src: string): Promise<boolean> => {
     return new Promise((resolve) => {
       const video = document.createElement('video');
-      video.preload = 'auto';
-      video.src = (src);
-      video.oncanplaythrough = () => {
-        setLoadedCount(prev => prev + 1);
-        resolve();
+      const timeout = setTimeout(() => {
+        resolve(false); // Timeout after 2 seconds
+      }, 2000);
+
+      video.preload = 'metadata'; // CRITICAL: Only metadata, not full video
+      video.src = src;
+      
+      video.onloadedmetadata = () => {
+        clearTimeout(timeout);
+        resolve(true);
       };
       video.onerror = () => {
-        setLoadedCount(prev => prev + 1);
-        resolve();
+        clearTimeout(timeout);
+        resolve(false);
       };
     });
   };
-
-  useEffect(() => {
-    updateProgress();
-  }, [loadedCount, updateProgress]);
 
   useEffect(() => {
     let isMounted = true;
-    let allLoaded = false;
+    let timeoutId: NodeJS.Timeout;
 
-    const preloadResources = async () => {
-      // Preload images
-      const imagePromises = criticalAssets
-        .filter(asset => !asset.includes('.mp4'))
-        .map(preloadImage);
+    const loadCriticalAssets = async () => {
+      if (!isMounted) return;
 
-      // Preload videos
-      const videoPromises = criticalAssets
-        .filter(asset => asset.includes('.mp4'))
-        .map(preloadVideo);
+      let loadedAssets = 0;
+      const totalToLoad = criticalAssets.length + 1; // +1 for fonts
 
-      // Preload fonts
-      const fontPromise = document.fonts.ready.then(() => {
-        setLoadedCount(prev => prev + 1);
-      });
+      // Update progress immediately
+      updateProgress(loadedAssets, totalToLoad);
 
-      // Wait for all assets to load
-      await Promise.allSettled([...imagePromises, ...videoPromises, fontPromise]);
+      try {
+        // 1. Load fonts first (non-blocking)
+        const fontLoad = document.fonts.ready.then(() => {
+          if (isMounted) {
+            loadedAssets++;
+            updateProgress(loadedAssets, totalToLoad);
+          }
+        });
 
-      allLoaded = true;
+        // 2. Load critical assets in parallel with timeouts
+        const assetPromises = criticalAssets.map(async (asset) => {
+          const success = asset.includes('.mp4') 
+            ? await preloadVideo(asset)
+            : await preloadImage(asset);
+          
+          if (isMounted && success) {
+            loadedAssets++;
+            updateProgress(loadedAssets, totalToLoad);
+          }
+          return success;
+        });
 
-      // Shorter minimum loading time for better UX
-      setTimeout(() => {
-        if (isMounted) {
+        // 3. Wait for fonts OR timeout (whichever comes first)
+        await Promise.race([
+          fontLoad,
+          new Promise(resolve => setTimeout(resolve, 1000))
+        ]);
+
+        // 4. Wait for critical assets with short timeout
+        await Promise.race([
+          Promise.allSettled(assetPromises),
+          new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+
+      } catch (error) {
+        console.log('Loading completed with optional assets');
+      }
+
+      // 5. Hide loader quickly - don't wait for everything
+      if (isMounted) {
+        timeoutId = setTimeout(() => {
           setLoading(false);
-        }
-      }, 800);
+        }, 300); // Very short minimum time
+      }
     };
 
-    // Start preloading
-    preloadResources();
+    loadCriticalAssets();
 
     return () => {
       isMounted = false;
+      clearTimeout(timeoutId);
     };
-  }, []);
-
-  const pageVariants = {
-    initial: { opacity: 0 },
-    in: { opacity: 1 },
-    out: { opacity: 0 }
-  };
-
-  const pageTransition = {
-    type: "tween" as const,
-    ease: "easeInOut" as const,
-    duration: 0.3
-  };
+  }, [updateProgress]);
 
   return (
-    <AnimatePresence mode="wait">
-      {loading && (
-        <motion.div
-          key="loader"
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={pageTransition}
-          className="fixed inset-0 z-50 bg-black flex items-center justify-center"
-        >
-          <Loader progress={progress} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <>
+      <AnimatePresence mode="wait">
+        {loading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }} // Faster transition
+            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+          >
+            <Loader progress={progress} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Content visible immediately after loading */}
+      <div style={{ 
+        opacity: loading ? 0 : 1,
+        transition: 'opacity 0.2s ease-in-out'
+      }}>
+        {children}
+      </div>
+    </>
   );
 };
 
