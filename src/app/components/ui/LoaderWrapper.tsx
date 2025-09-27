@@ -13,12 +13,9 @@ const LoaderWrapper = () => {
   const criticalAssets = [
     // Only critical videos for hero section
     '/videos/doll.mp4',
-    '/videos/doll2.mp4',
-    '/videos/doll3.mp4',
 
     // Critical images only
     '/assets/images/iPhone14Pro.svg',
-    '/assets/images/cursor.png',
   ];
 
   const totalAssets = criticalAssets.length + 1; // +1 for fonts
