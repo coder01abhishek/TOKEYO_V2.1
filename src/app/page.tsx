@@ -1,17 +1,19 @@
+import dynamic from "next/dynamic";
 import Hero from "./components/Hero";
-import SwiperGallery from "./components/SwiperGallery";
-import AtTokyo from "./components/AtTokyo";
-import Webelieve from "./components/Webelieve";
-import HowItWorks from "./components/HowItWork/HowItWork";
-import ModulesSection from "./components/ModulesSection";
-import UnderDevelopmentSlider from "./components/UnderDevelopmentSection";
-import AICharacterSection from "./components/AICharacterSection";
-import FaqSection from "./components/FaqSection";
-import NewAiAnimate from "./components/NewAiAnimate";
-import MobilePillTabs from "./components/MobilePillTabs";
 import Section from "./components/ui/Section";
-import HeroNew from "./components/HerNew";
-import Language from "./components/language";
+
+const SwiperGallery = dynamic(() => import("./components/SwiperGallery"), { loading: () => <div className="h-96" /> });
+const AtTokyo = dynamic(() => import("./components/AtTokyo"));
+const Webelieve = dynamic(() => import("./components/Webelieve"));
+const HowItWorks = dynamic(() => import("./components/HowItWork/HowItWork"));
+const ModulesSection = dynamic(() => import("./components/ModulesSection"));
+const UnderDevelopmentSlider = dynamic(() => import("./components/UnderDevelopmentSection"), { loading: () => <div className="h-96" /> });
+const AICharacterSection = dynamic(() => import("./components/AICharacterSection"));
+const FaqSection = dynamic(() => import("./components/FaqSection"));
+const NewAiAnimate = dynamic(() => import("./components/NewAiAnimate"));
+const MobilePillTabs = dynamic(() => import("./components/MobilePillTabs"));
+const HeroNew = dynamic(() => import("./components/HerNew"));
+const Language = dynamic(() => import("./components/language"));
 
 const pills = [
   { label: 'Models', gif: '/assets/gifs/models.svg' },

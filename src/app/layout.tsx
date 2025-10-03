@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
@@ -6,12 +6,21 @@ import Footer from "./components/Footer";
 import LoaderWrapper from "./components/ui/LoaderWrapper";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-// Initialize Inter font
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#111111',
+};
 
 export const metadata: Metadata = {
   title: "Project Tokyo - AI Companion Launchpad",
@@ -26,7 +35,7 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
     shortcut: '/favicon.ico',
   },
-  
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
@@ -36,6 +45,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://4b7mwyeirrypbewg.public.blob.vercel-storage.com" />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <LoaderWrapper>
           <>

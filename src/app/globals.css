@@ -18,15 +18,23 @@
     --foreground: #ffffff;
   }
 }
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html {
   scroll-behavior: smooth;
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  max-width:100vw;
-  overflow-x:hidden;
+  max-width: 100vw;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 @layer base {
@@ -189,18 +197,17 @@ body {
 }
 
 html, body {
-  overscroll-behavior: none; /* modern fix */
+  overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
+
 header {
   padding-top: env(safe-area-inset-top);
-}
-header {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  will-change: transform;
+  contain: layout style paint;
 }
 
 @keyframes float-bounce {
